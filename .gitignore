@@ -1,0 +1,6 @@
+node_modules/
+/NodeJsWebApplication/nbproject/private/
+/nbproject/private/
+nbproject/
+server/config.php
+.vscode/

@@ -1,0 +1,16 @@
+{
+  	"en":
+  	{
+	    "reports" : "Reports",
+	    "backlinks" : "Backlinks",
+	    "websites" : "Websites",
+	    "tags" : "Tags"
+	},
+	"ru":
+	{
+		"reports" : "Reports",
+	    "backlinks" : "Backlinks",
+	    "websites" : "Websites",
+	    "tags" : "Tags"
+	}
+}
