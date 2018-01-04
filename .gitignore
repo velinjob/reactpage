@@ -4,3 +4,6 @@ node_modules/
 nbproject/
 server/config.php
 .vscode/
+public/server/
+public/bundle.js
+public/styles.css

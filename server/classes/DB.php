@@ -13,7 +13,7 @@ class DB
     function __construct()
     {
         // establish mySQLi connection
-        $this->db = new mysqli('localhost', 'recovery', 'getmercy144', 'recovery');
+        $this->db = new mysqli(Config::DB_HOST, Config::DB_USER, Config::DB_PASSWORD, Config::DB_NAME);
         $this->db->set_charset('utf8');
         if ($this->db->connect_errno) throw new Exception ('Could not connect: ' . $this->db->connect_error);
     }
@@ -148,7 +148,7 @@ class DB
     /*** PAGES ***/
 
     function getPages(){
-        $res = $this->query("SELECT * FROM page");
+        $res = $this->query("SELECT `key` as url, name, id FROM page");
 
         $pages = [];
         while ($row = $res->fetch_assoc()){
