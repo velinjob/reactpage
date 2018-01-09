@@ -3,7 +3,7 @@ import React from 'react';
 import { render, browserHistory } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import reduxThunk from 'redux-thunk'
 import {IntlProvider, addLocaleData} from 'react-intl';
 import enLocaleData from 'react-intl/locale-data/en';
@@ -12,8 +12,7 @@ import rootReducer from './reducers';
 
 // components
 import HandleApp from './containers/HandleApp';
-import WelcomePage from './components/WelcomePage';
-import RequireAuth from './containers/RequireAuth';
+//import RequireAuth from './containers/RequireAuth';
 import CheckAuth from './containers/CheckAuth';
 //import Perf from 'react-addons-perf';
 
@@ -34,15 +33,22 @@ window.store = store;
 
 // Perf.start();
 
-render(
-    <IntlProvider locale="en" >        
+/*
+<IntlProvider locale="en" >
 		<Provider store={store}>
-		    <Router history={browserHistory}>
-			    <div>
-					<Route exact path="/" component={CheckAuth(HandleApp)} />
-		        	<Route path="/types" component={WelcomePage} />
-			    </div>		        
-		    </Router>
+		    <BrowserRouter history={browserHistory}>
+				<Route exact path="/" component={CheckAuth(HandleApp)} />
+		    </BrowserRouter>
+		</Provider>
+    </IntlProvider>, document.getElementById('app')
+*/
+
+render(
+    <IntlProvider locale="en" >
+		<Provider store={store}>
+			<BrowserRouter>
+				<HandleApp />
+			</BrowserRouter>		    
 		</Provider>
     </IntlProvider>, document.getElementById('app')
 );

@@ -34,3 +34,7 @@ else if(isset($_GET['check'])){
     echo json_encode(["res" => $res]);
     exit();
 }
+else if(isset($_GET['test_request'])){
+    echo json_encode(["result" => $db->testRequest()]);
+    exit();
+}

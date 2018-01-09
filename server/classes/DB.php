@@ -156,4 +156,19 @@ class DB
         }
         return $pages;
     }
+
+    /*** TEST DB ***/
+    function testRequest(){
+        $res = $this->query("SELECT * FROM event");
+        $events = [];
+
+        while ($row = $res->fetch_assoc()){
+            $events[] = $row;
+        }
+
+        $f = FirePHP::getInstance(true);
+        $f->fb($events);
+        
+        return $events;
+    }
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Navbar from './Navbar';
 import Spinner from '../components/common/Spinner';
 import HandleAuthModal from '../containers/HandleAuthModal';
-
+import Main from './Main';
 
 class App extends Component {
     componentDidMount() {
@@ -14,8 +14,8 @@ class App extends Component {
         return (
             <div>
                 <Navbar pages={this.props.pages} />
-                { this.props.openSignInModal || this.props.openSignUpModal ? <HandleAuthModal /> : null}
-                {this.props.children}
+                <Main />
+                { this.props.openSignInModal || this.props.openSignUpModal ? <HandleAuthModal /> : null}                  
                 <Spinner loaded={this.props.toSpin}/>
             </div>
         )

@@ -24,7 +24,9 @@ const Navbar = ({pages}) => (
                         })
                     }
                 </ul>
+
                 <HandleAuthPanel />
+
             </div>
         </div>
     </nav>
