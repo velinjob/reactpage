@@ -25,7 +25,6 @@ class App extends Component {
 App.propTypes = {
     openSignInModal : PropTypes.bool,
     openSignUpModal : PropTypes.bool,
-    children : PropTypes.any,
     toSpin:PropTypes.bool
 };
 

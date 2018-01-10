@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import { getPages } from '../actions/index';
+import { withRouter } from 'react-router-dom';
 import App from '../components/App';
 
 const mapStateToProps = (state, props) => {
 	console.log(state);
 	
     return {
-        children : props.children,
         openSignInModal :  state.auth.openSignInModal,
     	openSignUpModal :  state.auth.openSignUpModal,
         pages : state.main.pages || [],
@@ -22,4 +22,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

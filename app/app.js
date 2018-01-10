@@ -12,9 +12,6 @@ import rootReducer from './reducers';
 
 // components
 import HandleApp from './containers/HandleApp';
-//import RequireAuth from './containers/RequireAuth';
-import CheckAuth from './containers/CheckAuth';
-//import Perf from 'react-addons-perf';
 
 addLocaleData(enLocaleData);
 addLocaleData(ruLocaleData);
@@ -31,20 +28,6 @@ const store = createStoreWithMiddleware(rootReducer);
 // put window.store here to get an access to a store from utils/services.js/isTypeExist
 window.store = store;
 
-// Perf.start();
-
-/*
-<IntlProvider locale="en" >
-		<Provider store={store}>
-		    <BrowserRouter history={browserHistory}>
-				<Route exact path="/" component={CheckAuth(HandleApp)} />
-		    </BrowserRouter>
-		</Provider>
-    </IntlProvider>, document.getElementById('app')
-*/
-
-// just to test the slack
-
 render(
     <IntlProvider locale="en" >
 		<Provider store={store}>
@@ -54,7 +37,3 @@ render(
 		</Provider>
     </IntlProvider>, document.getElementById('app')
 );
-
-//Perf.stop();
-//Perf.printInclusive();
-//Perf.printWasted();

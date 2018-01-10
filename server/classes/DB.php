@@ -169,6 +169,7 @@ class DB
         $f = FirePHP::getInstance(true);
         $f->fb($events);
         
+        // there must be returned array with keys 'key' and 'name'
         return $events;
     }
 }

@@ -17,6 +17,16 @@ export default {
         });
     },
 
+    getTestContent (callback){
+        axios.post(`${ROOT_URL}/index.php?test_request`)
+        .then(response => {
+            callback(response);
+        })
+        .catch(err => {
+            console.log('err', err)
+        });
+    },
+
 
     auth (type, login, password, callback){
         axios.get(`${ROOT_URL}/index.php?auth&type=${type}&login=${login}&password=${password}`)

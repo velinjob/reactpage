@@ -1,10 +1,27 @@
-import React from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-const Welcome = () => (
-    <div className="container">
-        <p>Welcome YOU on React Simple App!!!</p>
-        <p>You need to be signed up or signed in to use and taste this app!!!</p>
-    </div>
-);
+class TestPage extends Component {
+    componentDidMount() {
+    	this.props.getTestContent();
+    }
 
-export default Welcome;
+    render() {
+        return (
+        	<div className="container">
+				{ 
+                    this.props.testContent.map(item=>{
+                        return <div key={item.key}>{item.name}</div>
+                    })
+                }
+		    </div>
+        )
+    }
+}
+
+TestPage.propTypes = {
+	getTestContent : PropTypes.func,
+	testContent : PropTypes.array
+};
+
+export default TestPage;

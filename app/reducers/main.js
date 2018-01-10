@@ -6,6 +6,10 @@ export default (state = {}, action) => {
             return Object.assign({}, state, {
                 pages : action.pages
             });
+        case types.GET_TEST_CONTENT:
+            return Object.assign({}, state, {
+                testContent : action.testContent
+            });
     }
     return state;
 };
