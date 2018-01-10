@@ -43,6 +43,8 @@ window.store = store;
     </IntlProvider>, document.getElementById('app')
 */
 
+// just to test the slack
+
 render(
     <IntlProvider locale="en" >
 		<Provider store={store}>
