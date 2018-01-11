@@ -17,6 +17,16 @@ export default {
         });
     },
 
+    getEvents (token, callback){
+        axios.post(`${ROOT_URL}/index.php?get_events&token=${token}`)
+        .then(response => {
+            callback(response);
+        })
+        .catch(err => {
+            console.log('err', err)
+        });
+    },
+
     getTestContent (callback){
         axios.post(`${ROOT_URL}/index.php?test_request`)
         .then(response => {

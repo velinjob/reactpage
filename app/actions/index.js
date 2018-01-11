@@ -12,13 +12,15 @@ export const getPages = () => {
     }
 };
 
-export const getTestContent = () => {
+export const getEvents = () => {
     return dispatch =>{
-        fetch.getTestContent(response => {
+        let token = localStorage.getItem('recovery.com');
+        
+        fetch.getEvents(token, response => {
             dispatch({
-                type: types.GET_TEST_CONTENT,
-                testContent : response.data.res
+                type: types.GET_EVENTS,
+                events : response.data.res || []
             });
         });
     }
-}
+};

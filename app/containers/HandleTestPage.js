@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import { getTestContent } from '../actions/index';
+import { getTestContent } from '../actions/test';
 import { withRouter } from 'react-router-dom';
 import TestPage from '../components/TestPage';
 
 const mapStateToProps = (state, props) => {
     return {
-        testContent : state.main.testContent || []
+        testContent : state.test.testContent || []
     }
 };
 

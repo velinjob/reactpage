@@ -17,4 +17,6 @@ export const HANDLE_SPINNER = 'handleSpinner';
 
 //index
 export const GET_PAGES = 'GET_PAGES';
+export const GET_EVENTS = 'GET_EVENTS';
+
 export const GET_TEST_CONTENT = 'GET_TEST_CONTENT';

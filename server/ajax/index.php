@@ -5,6 +5,10 @@ if(isset($_GET ['get_pages'])) {
     echo json_encode(["pages" => $db->getPages()]);
     exit();
 }
+else if(isset($_GET ['get_events'])) {
+    echo json_encode(["res" => $db->getEvents($_GET['token'])]);
+    exit();
+}
 else if(isset($_GET ['auth'])) {
     $response = $db->auth(isset($_GET['type']) ? $_GET['type'] : null, isset($_GET['login']) ?  $_GET['login'] : null , isset($_GET['password']) ? $_GET['password'] : null);
 

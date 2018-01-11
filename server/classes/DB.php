@@ -54,49 +54,28 @@ class DB
     function getUserByEmail($email)
     {
         $email = $this->esc($email);
-        $res = $this->query("SELECT * FROM user WHERE email='$email'");
+        $res = $this->query("SELECT * FROM admin WHERE login='$email'");
         return $res->fetch_assoc();
     }
     
     function getUserById($id)
     {
         $id = (int)$id;
-        $res = $this->query("SELECT * FROM user WHERE id=$id");
+        $res = $this->query("SELECT * FROM admin WHERE member_key=$id");
         return $res->fetch_assoc();
     }
 
-    function loginUser($userId, $token)
-    {
-        $userId = (int)$userId;
-        $token = $this->esc($token);
-        $this->query("INSERT IGNORE INTO user_session(user, token) VALUES ($userId, '$token')");
-        $this->query("UPDATE user SET last_login=NOW() WHERE id=$userId");
-    }
-
-    function isAdmin($userId)
-    {
-        $userId = (int)$userId;
-        $res = $this->query("SELECT admin FROM user WHERE id=$userId");
-        if ($row = $res->fetch_assoc())
-            return (int)$row['admin'];
-        else
-            return false;
-    }
-
-    function logoutUser($userId, $token)
-    {
-        $userId = (int)$userId;
-        $token = $this->esc($token);
-        $this->query("DELETE FROM user_session WHERE user=$userId AND token='$token'");
-    }    
-
     function getUserByToken($token)
     {
+        $token = $this->esc($token);
         return JWT::decode($token, Config::USER_TOKEN_SECRET, array('HS256'));
     }
 
     function getTokenForUser($login, $password) 
     {
+        $login = $this->esc($login);
+        $password = $this->esc($password);
+
         $token = array(
             "login" => $login,
             "password" => $password
@@ -106,13 +85,18 @@ class DB
     }
 
     function checkIfUserExists($login){
-        $res = $this->query("SELECT * FROM user WHERE email = '$login' ");
+        $login = $this->esc($login);
+        $res = $this->query("SELECT * FROM admin WHERE login = '$login' ");
         $row = $res->fetch_assoc();
 
         return $row ? $row : false;
     }
 
     function auth ($type, $login, $password) {
+        $type = $this->esc($type);
+        $login = $this->esc($login);
+        $password = $this->esc($password);
+
         if (!$login || !$password) 
             return(['errorData' => true]);
 
@@ -123,8 +107,9 @@ class DB
         }
         else if(!$user && $type === 'signUp'){     
             $token = $this->getTokenForUser($login, $password);       
+            $member_key = $this->getNewMemberKey();
 
-            $this->query("INSERT INTO user (email, password, created, token) VALUES ('$login', '$password', now(), '$token')");
+            $this->query("INSERT INTO admin (member_key, login, password, created) VALUES ('$member_key', '$login', '$password', now())");
             return(['token' => $token]);
         }
         else if($user && $type === 'signIn'){
@@ -137,12 +122,30 @@ class DB
         }
     }
 
+    function getNewMemberKey (){
+        $res=db_query ("SELECT `key` as id FROM member WHERE `key` ORDER BY `key` DESC LIMIT 1");
+        $row = $res->fetch_object();
+        $key = "990000000";
+        if ($row && strlen($row->id)==9) $key = (string)($row->id + 1);
+        return $key;
+    }
+
     function isUserLoggedIn($token){
+        $token = $this->esc($token);
         $userInfo = $this->getUserByToken($token);
-        $res = $this->query("SELECT * FROM user WHERE email = '". $userInfo->login. "' AND password = '". $userInfo->password ."' ");
+        $res = $this->query("SELECT * FROM admin WHERE login = '". $userInfo->login. "' AND password = '". $userInfo->password ."' ");
         $row = $res->fetch_assoc();
 
         return $row ? true : false;
+    }
+
+    function getUserIdByLogin($login){
+        $login = $this->esc($login);
+
+        $res = $this->query("SELECT member_key as id FROM admin WHERE login = '$login' ");
+        $row = $res->fetch_assoc();
+
+        return $row ? $row['id'] : false;
     }
     
     /*** PAGES ***/
@@ -155,6 +158,81 @@ class DB
             $pages [] = $row;
         }
         return $pages;
+    }
+
+    /** **/
+    function getEvents($token){
+        $token = $this->esc($token);
+        $user = $this->getUserByToken($token);
+
+            $adminId = $this->getUserIdByLogin($user->login);
+            $request= $adminId ? "  AND e.is_active=1 " : "";
+            
+            // first request is by locality
+            // second request is by admin access if zones more than access
+            // third request is by admin acees if zones less than access 
+            // forth request is by zones (available only events are not restricted by zones)
+            
+            $res=$this->query ("
+                SELECT DISTINCT * FROM (
+                SELECT e.key as id, e.name as name, e.need_passport, e.need_transport, 
+                e.need_prepayment, e.start_date, e.end_date, e.need_flight, e.need_tp, e.regend_date, e.info, e.private, 
+                e.locality_key, e.author, l.name as locality_name, e.is_active, e.archived, re.regstate_key
+                FROM event e             
+                LEFT JOIN reg re ON re.event_key=e.key AND re.member_key='$adminId'
+                LEFT JOIN locality l ON l.key=e.locality_key 
+                LEFT JOIN event_zones z ON z.event_key=e.key
+                LEFT JOIN country c ON c.key = z.country_key
+                LEFT JOIN region r ON r.key = z.region_key or c.key=r.country_key
+                INNER JOIN locality lo ON lo.key = z.locality_key or lo.region_key = r.key
+                INNER JOIN member m ON m.locality_key = lo.key
+                WHERE m.key='$adminId' $request
+                    
+                UNION
+                
+                SELECT e.key as id, e.name as name, e.need_passport, e.need_transport, 
+                e.need_prepayment, e.start_date, e.end_date, e.need_flight, e.need_tp, e.regend_date, e.info, e.private, 
+                e.locality_key, e.author, l.name as locality_name, e.is_active, e.archived, re.regstate_key
+                FROM event e  
+                LEFT JOIN reg re ON re.event_key=e.key AND re.member_key='$adminId'
+                LEFT JOIN locality l ON l.key=e.locality_key                    
+                LEFT JOIN event_zones z ON z.event_key=e.key
+                LEFT JOIN country c ON c.key = z.country_key
+                LEFT JOIN region r ON r.key = z.region_key or c.key=r.country_key
+                INNER JOIN locality lo ON lo.key = z.locality_key or lo.region_key = r.key
+                INNER JOIN access a ON a.country_key=c.key or a.region_key=r.key or a.locality_key = lo.key
+                WHERE a.member_key='$adminId' $request
+                
+                UNION 
+                
+                SELECT DISTINCT e.key as id, e.name as name, e.need_passport, e.need_transport, 
+                e.need_prepayment, e.start_date, e.end_date, e.need_flight, e.need_tp, e.regend_date, e.info, e.private, 
+                e.locality_key, e.author, l.name as locality_name, e.is_active, e.archived, re.regstate_key
+                FROM event e   
+                LEFT JOIN reg re ON re.event_key=e.key AND re.member_key='$adminId'
+                LEFT JOIN locality l ON l.key=e.locality_key   
+                INNER JOIN access a ON a.member_key='$adminId'
+                INNER JOIN country c ON c.key = a.country_key
+                INNER JOIN region r ON r.key = a.region_key or c.key=r.country_key
+                INNER JOIN locality lo ON lo.key = a.locality_key or lo.region_key = r.key
+                INNER JOIN event_zones z ON z.event_key=e.key AND (z.country_key=c.key or z.region_key=r.key or z.locality_key=lo.key)
+                WHERE 1 $request
+                    
+                UNION
+                
+                SELECT e.key as id, e.name as name, e.need_passport, e.need_transport, 
+                e.need_prepayment, e.start_date, e.end_date, e.need_flight, e.need_tp, e.regend_date, e.info, e.private, 
+                e.locality_key, e.author, l.name as locality_name, e.is_active, e.archived, re.regstate_key
+                FROM event e   
+                LEFT JOIN reg re ON re.event_key=e.key AND re.member_key='$adminId'
+                LEFT JOIN locality l ON l.key=e.locality_key      
+                WHERE ((SELECT COUNT(*) FROM event_zones ez WHERE ez.event_key=e.key) = 0 OR e.author='$adminId') $request 
+                ) q "
+            );
+           
+            $events = array ();
+            while ($row = $res->fetch_object()) $events[]=$row;       
+            return $events;
     }
 
     /*** TEST DB ***/
