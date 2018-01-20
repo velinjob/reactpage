@@ -2,7 +2,7 @@ import axios from 'axios';const ROOT_URL = location.host === 'localhost:8080' ? 
 //const ROOT_URL = 'http://localhost:3000';
 
 export default {
-
+    // index page
     getPages (callback){
         axios.post(`${ROOT_URL}/index.php?get_pages`)
         .then(response => {
@@ -23,6 +23,29 @@ export default {
         });
     },
 
+    // schedule page
+
+    getScheduleItems(token ,callback){
+        axios.post(`${ROOT_URL}/schedule.php?get&token=${token}`)
+        .then(response => {
+            callback(response);
+        })
+        .catch(err => {
+            console.log('err', err)
+        });
+    },
+
+    handleForm(token, item, callback){
+        axios.post(`${ROOT_URL}/schedule.php?set&token=${token}&item=${item}`)
+        .then(response => {
+            callback(response);
+        })
+        .catch(err => {
+            console.log('err', err)
+        });
+    },    
+
+    // test page
     getTestContent (callback){
         axios.post(`${ROOT_URL}/index.php?test_request`)
         .then(response => {
