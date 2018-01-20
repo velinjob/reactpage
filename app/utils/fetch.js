@@ -1,8 +1,4 @@
-import axios from 'axios';
-
-const ROOT_URL = location.host === 'localhost:8080' ? 'http://localhost:8080/server/ajax' : 'https://infinite-coast-35847.herokuapp.com';
-
-//For testing
+import axios from 'axios';const ROOT_URL = location.host === 'localhost:8080' ? 'http://localhost:8080/server/ajax' : 'https://infinite-coast-35847.herokuapp.com';//For testing
 //const ROOT_URL = 'http://localhost:3000';
 
 export default {
