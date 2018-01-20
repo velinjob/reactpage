@@ -11,7 +11,7 @@ class TestPage extends Component {
         	<div className="container">
 				{ 
                     this.props.events.map(event=>{
-                        return <div key={event.id}>{event.name + ' (' + event.locality + ')'}</div>
+                        return <div key={event.id}>{event.name + ' (' + event.locality_name + ')'}</div>
                     })
                 }
 		    </div>

@@ -123,7 +123,7 @@ class DB
     }
 
     function getNewMemberKey (){
-        $res=db_query ("SELECT `key` as id FROM member WHERE `key` ORDER BY `key` DESC LIMIT 1");
+        $res=$this->query ("SELECT `key` as id FROM member WHERE `key` ORDER BY `key` DESC LIMIT 1");
         $row = $res->fetch_object();
         $key = "990000000";
         if ($row && strlen($row->id)==9) $key = (string)($row->id + 1);
@@ -160,7 +160,7 @@ class DB
         return $pages;
     }
 
-    /** **/
+    /** INDEX PAGE **/
     function getEvents($token){
         $token = $this->esc($token);
         $user = $this->getUserByToken($token);
@@ -235,7 +235,7 @@ class DB
             return $events;
     }
 
-    /*** TEST DB ***/
+    /*** TEST PAGE ***/
     function testRequest(){
         $res = $this->query("SELECT * FROM event");
         $events = [];
@@ -249,5 +249,12 @@ class DB
         
         // there must be returned array with keys 'key' and 'name'
         return $events;
+    }
+
+    /*** SCHEDULE PAGE ***/
+    function getSchedlueItems($token){
+        $_token = $this->esc($token);
+
+        return [];
     }
 }
