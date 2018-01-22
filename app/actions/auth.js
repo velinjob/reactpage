@@ -1,6 +1,8 @@
 import * as types from '../utils/constants';
 import fetch from '../utils/fetch';
 
+import {getPages, getEvents} from './index';
+
 export const openAuthModalToSignIn = () => {
     return {
         type: types.OPEN_AUTH_MODAL_TO_SIGNIN,
@@ -49,6 +51,9 @@ export const auth = (type, login, password) => {
                     loggedIn : true,
                     error : false
                 });
+
+                dispatch(getPages());
+                dispatch(getEvents());
             }
         });
     }

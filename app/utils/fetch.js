@@ -1,14 +1,11 @@
 import axios from 'axios';
 
-const ROOT_URL = location.host === 'localhost:8080' ? 'http://localhost:8080/server/ajax' : 'https://infinite-coast-35847.herokuapp.com';
-
-//For testing
-//const ROOT_URL = 'http://localhost:3000';
+const ROOT_URL = location.host === 'localhost:8080' ? 'http://localhost:8080/server/ajax' : 'https://dev.reg-page.ru/server/ajax';
 
 export default {
     // index page
-    getPages (callback){
-        axios.post(`${ROOT_URL}/index.php?get_pages`)
+    getPages (token, callback){
+        axios.post(`${ROOT_URL}/index.php?get_pages&token=${token || ''}`)
         .then(response => {
             callback(response);
         })
@@ -18,7 +15,7 @@ export default {
     },
 
     getEvents (token, callback){
-        axios.post(`${ROOT_URL}/index.php?get_events&token=${token}`)
+        axios.post(`${ROOT_URL}/index.php?get_events&token=${token || ''}`)
         .then(response => {
             callback(response);
         })

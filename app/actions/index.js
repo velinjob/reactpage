@@ -3,7 +3,8 @@ import fetch from '../utils/fetch';
 
 export const getPages = () => {
     return dispatch =>{
-        fetch.getPages(response => {
+        let token = localStorage.getItem('recovery.com');
+        fetch.getPages(token, response => {
             dispatch({
                 type: types.GET_PAGES,
                 pages : response.data.pages || []

@@ -150,20 +150,29 @@ class DB
     
     /*** PAGES ***/
 
-    function getPages(){
-        $res = $this->query("SELECT `key` as url, name, id FROM page");
+    function getPages($token){
+        $token = $this->esc($token);
 
-        $pages = [];
-        while ($row = $res->fetch_assoc()){
-            $pages [] = $row;
+        if($this->isUserLoggedIn($token)){
+            $res = $this->query("SELECT `key` as url, name, id FROM page");
+
+            $pages = [];
+            while ($row = $res->fetch_assoc()){
+                $pages [] = $row;
+            }
+            return $pages;
         }
-        return $pages;
+        else{
+            return false;
+        }        
     }
 
     /** INDEX PAGE **/
     function getEvents($token){
         $token = $this->esc($token);
-        $user = $this->getUserByToken($token);
+
+        if($this->isUserLoggedIn($token)){
+            $user = $this->getUserByToken($token);
 
             $adminId = $this->getUserIdByLogin($user->login);
             $request= $adminId ? "  AND e.is_active=1 " : "";
@@ -233,6 +242,10 @@ class DB
             $events = array ();
             while ($row = $res->fetch_object()) $events[]=$row;       
             return $events;
+        }
+        else{
+            return false;
+        }
     }
 
     /*** TEST PAGE ***/
