@@ -3,7 +3,7 @@ import fetch from '../utils/fetch';
 
 export const getPages = () => {
     return dispatch =>{
-        let token = localStorage.getItem('recovery.com');
+        let token = localStorage.getItem(types.PROJECT_NAME);
         fetch.getPages(token, response => {
             dispatch({
                 type: types.GET_PAGES,
@@ -15,7 +15,7 @@ export const getPages = () => {
 
 export const getEvents = () => {
     return dispatch =>{
-        let token = localStorage.getItem('recovery.com');
+        let token = localStorage.getItem(types.PROJECT_NAME);
         
         fetch.getEvents(token, response => {
             dispatch({

@@ -23,3 +23,6 @@ export const GET_TEST_CONTENT = 'GET_TEST_CONTENT';
 
 // schedule
 export const GET_SCHEDULE_ITEMS = 'GET_SCHEDULE_ITEMS';
+
+//members
+export const GET_MEMBERS_LIST = 'GET_MEMBERS_LIST';

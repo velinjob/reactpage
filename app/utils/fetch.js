@@ -76,5 +76,17 @@ export default {
         .catch(err => {
             console.log('err', err)
         });
+    },
+
+    // members page
+    getMembersList(token, callback){
+        axios.get(`${ROOT_URL}/members.php?get_members&token=${token}`)
+        .then((response) => {
+            callback(response);
+        })
+        .catch(err => {
+            console.log('err', err)
+        });
     }
+
 };
