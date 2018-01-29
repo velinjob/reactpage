@@ -2,11 +2,11 @@
 require_once "./ajax.php";
 
 if(isset($_GET ['get_pages'])) {
-    echo json_encode(["pages" => $db->getPages()]);
+    echo json_encode(["pages" => isset($_GET['token']) && $_GET['token'] !== '' ? $db->getPages($_GET['token']) : false ]);
     exit();
 }
 else if(isset($_GET ['get_events'])) {
-    echo json_encode(["res" => $db->getEvents($_GET['token'])]);
+    echo json_encode(["res" => isset($_GET['token']) && $_GET['token'] !== '' ? $db->getEvents($_GET['token']) : false]);
     exit();
 }
 else if(isset($_GET ['auth'])) {

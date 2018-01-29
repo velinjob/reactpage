@@ -123,7 +123,7 @@ class DB
     }
 
     function getNewMemberKey (){
-        $res=db_query ("SELECT `key` as id FROM member WHERE `key` ORDER BY `key` DESC LIMIT 1");
+        $res=$this->query ("SELECT `key` as id FROM member WHERE `key` ORDER BY `key` DESC LIMIT 1");
         $row = $res->fetch_object();
         $key = "990000000";
         if ($row && strlen($row->id)==9) $key = (string)($row->id + 1);
@@ -150,20 +150,29 @@ class DB
     
     /*** PAGES ***/
 
-    function getPages(){
-        $res = $this->query("SELECT `key` as url, name, id FROM page");
+    function getPages($token){
+        $token = $this->esc($token);
 
-        $pages = [];
-        while ($row = $res->fetch_assoc()){
-            $pages [] = $row;
+        if($this->isUserLoggedIn($token)){
+            $res = $this->query("SELECT `key` as url, name, id FROM page");
+
+            $pages = [];
+            while ($row = $res->fetch_assoc()){
+                $pages [] = $row;
+            }
+            return $pages;
         }
-        return $pages;
+        else{
+            return false;
+        }        
     }
 
-    /** **/
+    /** INDEX PAGE **/
     function getEvents($token){
         $token = $this->esc($token);
-        $user = $this->getUserByToken($token);
+
+        if($this->isUserLoggedIn($token)){
+            $user = $this->getUserByToken($token);
 
             $adminId = $this->getUserIdByLogin($user->login);
             $request= $adminId ? "  AND e.is_active=1 " : "";
@@ -233,9 +242,57 @@ class DB
             $events = array ();
             while ($row = $res->fetch_object()) $events[]=$row;       
             return $events;
+        }
+        else{
+            return false;
+        }
     }
 
-    /*** TEST DB ***/
+    /*** ***/
+    function db_getMembersList ($token){
+        global $db;
+        $_token = $this->esc($token);
+        $user = $this->getUserByToken($_token);
+        $active = 'active DESC';
+        $userId = $this->getUserIdByLogin($user->login);
+
+        $res=$this->query ("SELECT DISTINCT * FROM (SELECT m.key as id, m.name as name, IF (COALESCE(l.name,'')='', m.new_locality, l.name) as locality,
+                        m.email as email, m.cell_phone as cell_phone, m.changed>0 as changed, m.admin_key as admin_key,
+                        (SELECT name FROM member m2 WHERE m2.key=m.admin_key) as admin_name, m.active, m.locality_key,
+                        DATEDIFF(CURRENT_DATE, STR_TO_DATE(m.birth_date, '%Y-%m-%d'))/365 as age, m.birth_date,
+                        m.school_comment, m.college_comment, m.college_start, m.college_end, m.school_start, m.school_end,
+                        m.comment, co.name as college_name, m.category_key,
+                        CASE WHEN m.category_key='SC' OR m.category_key='PS' THEN 1 ELSE 0 END as school,
+                        CASE WHEN m.school_start>0 THEN YEAR(NOW()) - m.school_start + 1 ELSE 0 END as school_level,
+                        CASE WHEN m.college_start>0 THEN YEAR(NOW()) - m.college_start + 1 ELSE 0 END as college_level
+                        FROM access as a                    
+                        LEFT JOIN country c ON c.key = a.country_key
+                        LEFT JOIN region r ON r.key = a.region_key OR c.key=r.country_key
+                        INNER JOIN locality l ON l.region_key = r.key OR l.key=a.locality_key
+                        INNER JOIN member m ON m.locality_key = l.key
+                        LEFT JOIN college co ON co.key = m.college_key
+                        WHERE a.member_key='$userId'
+                        UNION 
+                        SELECT m.key as id, m.name as name, IF (COALESCE(m.locality_key,'')='', m.new_locality, m.name) as locality,
+                        m.email as email, m.cell_phone as cell_phone, m.changed>0 as changed, m.admin_key as admin_key,
+                        (SELECT name FROM member m2 WHERE m2.key=m.admin_key) as admin_name, m.active, m.locality_key,
+                        DATEDIFF(CURRENT_DATE, STR_TO_DATE(m.birth_date, '%Y-%m-%d'))/365 as age, m.birth_date,
+                        m.school_comment, m.college_comment, m.college_start, m.college_end, m.school_start, m.school_end,
+                        m.comment, co.name as college_name, m.category_key,
+                        CASE WHEN m.category_key='SC' OR m.category_key='PS' THEN 1 ELSE 0 END as school,
+                        CASE WHEN m.school_start>0 THEN YEAR(NOW()) - m.school_start + 1 ELSE 0 END as school_level,
+                        CASE WHEN m.college_start>0 THEN YEAR(NOW()) - m.college_start + 1 ELSE 0 END as college_level
+                        FROM member m
+                        LEFT JOIN college co ON co.key = m.college_key
+                        WHERE m.admin_key='$userId' and m.locality_key is NULL
+                        ) q ORDER BY name ASC, $active ");
+
+        $members = array ();
+        while ($row = $res->fetch_object()) $members[]=$row;
+        return $members;
+    }
+
+    /*** TEST PAGE ***/
     function testRequest(){
         $res = $this->query("SELECT * FROM event");
         $events = [];
@@ -249,5 +306,12 @@ class DB
         
         // there must be returned array with keys 'key' and 'name'
         return $events;
+    }
+
+    /*** SCHEDULE PAGE ***/
+    function getSchedlueItems($token){
+        $_token = $this->esc($token);
+
+        return [];
     }
 }
