@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getPages } from '../actions/index';
+import { getInitContent } from '../actions/index';
 import { withRouter } from 'react-router-dom';
 import App from '../components/App';
 
@@ -16,8 +16,8 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getPages: () => {
-            dispatch(getPages())
+        getInitContent: () => {
+            dispatch(getInitContent())
         }
     }
 };

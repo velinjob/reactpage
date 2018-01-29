@@ -7,7 +7,7 @@ import Main from './Main';
 
 class App extends Component {
     componentDidMount() {
-        this.props.getPages();
+        this.props.getInitContent();
     }
 
     render() {
@@ -25,7 +25,8 @@ class App extends Component {
 App.propTypes = {
     openSignInModal : PropTypes.bool,
     openSignUpModal : PropTypes.bool,
-    toSpin:PropTypes.bool
+    toSpin:PropTypes.bool,
+    getInitContent : PropTypes.func
 };
 
 export default App;

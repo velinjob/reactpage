@@ -5,15 +5,17 @@ import HandleGeneralPage from '../containers/HandleGeneralPage';
 import HandleSchedulePage from '../containers/HandleSchedulePage';
 import HandleMembersPage from '../containers/HandleMembersPage';
 
+import CheckAuth from '../containers/CheckAuth';
+
 const Main = () => (
-  <main>
+  <div>
     <Switch>
       <Route exact path='/' component={HandleGeneralPage} />
       <Route exact path='/test' component={HandleTestPage} />
       <Route exact path='/members' component={HandleMembersPage} />
       <Route exact path='/schedule' component={HandleSchedulePage} />
     </Switch>
-  </main>
+  </div>
 )
 
 export default Main

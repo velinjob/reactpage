@@ -4,7 +4,7 @@ const ROOT_URL = location.host === 'localhost:8080' ? 'http://localhost:8080/ser
 
 export default {
     // index page
-    getPages (token, callback){
+    getInitContent (token, callback){
         axios.post(`${ROOT_URL}/index.php?get_pages&token=${token || ''}`)
         .then(response => {
             callback(response);

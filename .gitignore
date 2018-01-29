@@ -7,3 +7,4 @@ server/config.php
 public/server/
 public/bundle.js
 public/styles.css
+package-lock.json

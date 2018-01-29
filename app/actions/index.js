@@ -1,10 +1,10 @@
 import * as types from '../utils/constants';
 import fetch from '../utils/fetch';
 
-export const getPages = () => {
+export const getInitContent = () => {
     return dispatch =>{
         let token = localStorage.getItem(types.PROJECT_NAME);
-        fetch.getPages(token, response => {
+        fetch.getInitContent(token, response => {
             dispatch({
                 type: types.GET_PAGES,
                 pages : response.data.pages || []
