@@ -1,0 +1,19 @@
+.fa-chevron-down
+{       
+    color: black;  
+}
+
+
+tr.row-name
+{
+    font-size: 18px;
+    color:#448aff;
+}
+
+tr.row-content
+{
+    color:#6c7173;
+}
+
+
+

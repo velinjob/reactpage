@@ -1,0 +1,18 @@
+
+.btn {
+    display: inline-block;
+    vertical-align: bottom;
+    width: 180px; 
+    padding: 4px 12px;
+    box-shadow: 0 0 0 1px rgba(56, 55, 55, 0.2);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-default {   
+    margin-left: 10px;  
+    background: #ffffff;
+    width: 45px;
+    
+}
+
